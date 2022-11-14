@@ -1,36 +1,44 @@
 defmodule TodoServer do
   use GenServer
 
+  @impl GenServer
   def init(entries) do
     {:ok, TodoList.new(entries)}
   end
 
+  @impl GenServer
   def handle_cast({:add_entry, entry}, todo_list) do
     {:noreply, TodoList.add_entry(todo_list, entry)}
   end
 
+  @impl GenServer
   def handle_cast({:update_entry, id, updater_fun}, todo_list) do
     {:noreply, TodoList.update_entry(todo_list, id, updater_fun)}
   end
 
+  @impl GenServer
   def handle_cast({:update_entry, entry}, todo_list) do
     {:noreply, TodoList.update_entry(todo_list, entry)}
   end
 
+  @impl GenServer
   def handle_cast({:delete_entry, id}, todo_list) do
     {:noreply, TodoList.delete_entry(todo_list, id)}
   end
 
+  @impl GenServer
   def handle_call({:entries, date}, _, todo_list) do
     {:reply, TodoList.entries(todo_list, date), todo_list}
   end
 
+  @impl GenServer
   def handle_info(:cleanup, state) do
     # this method is just an example how to use handle info
     IO.puts("Perfroming cleanup...")
     {:noreply, state}
   end
 
+  @impl GenServer
   def handle_info(_, state), do: {:noreply, state}
 
   def start(entries \\ []) do
