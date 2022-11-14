@@ -42,7 +42,7 @@ defmodule Todo.Server do
   def handle_info(_, state), do: {:noreply, state}
 
   def start(entries \\ []) do
-    GenServer.start(Todo.Server, entries)
+    GenServer.start(__MODULE__, entries)
   end
 
   def add_entry(pid, %{date: _, title: _} = entry) do
