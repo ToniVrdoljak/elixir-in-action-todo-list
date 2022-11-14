@@ -44,6 +44,20 @@ defmodule TodoServerTest do
            ]
   end
 
+  test "Reading when there are multiple dates succeeds" do
+    {:ok, pid} =
+      TodoServer.start([
+        %{date: {2013, 12, 19}, title: "TODO1"},
+        %{date: {2013, 12, 20}, title: "TODO2"}
+      ])
+
+    result_list = TodoServer.entries(pid, {2013, 12, 19})
+    assert result_list == [%{id: 1, date: {2013, 12, 19}, title: "TODO1"}]
+
+    result_list = TodoServer.entries(pid, {2013, 12, 20})
+    assert result_list == [%{id: 2, date: {2013, 12, 20}, title: "TODO2"}]
+  end
+
   test "Updating entry succeeds" do
     {:ok, pid} = TodoServer.start([%{date: {2013, 12, 19}, title: "TODO1"}])
 
