@@ -1,22 +1,22 @@
-defmodule TodoServerTest do
+defmodule Todo.ServerTest do
   use ExUnit.Case
-  doctest TodoServer
+  doctest Todo.Server
 
-  test "New TodoList is empty" do
-    {:ok, pid} = TodoServer.start()
+  test "New Todo.List is empty" do
+    {:ok, pid} = Todo.Server.start()
 
-    result_list = TodoServer.entries(pid, {2013, 12, 19})
+    result_list = Todo.Server.entries(pid, {2013, 12, 19})
     assert result_list == []
   end
 
-  test "Initializing TodoList with entries" do
+  test "Initializing Todo.List with entries" do
     {:ok, pid} =
-      TodoServer.start([
+      Todo.Server.start([
         %{date: {2013, 12, 19}, title: "TODO1"},
         %{date: {2013, 12, 19}, title: "TODO2"}
       ])
 
-    result_list = TodoServer.entries(pid, {2013, 12, 19})
+    result_list = Todo.Server.entries(pid, {2013, 12, 19})
 
     assert result_list == [
              %{id: 1, date: {2013, 12, 19}, title: "TODO1"},
@@ -25,18 +25,18 @@ defmodule TodoServerTest do
   end
 
   test "Adding to empty date and reading succeeds" do
-    {:ok, pid} = TodoServer.start()
-    TodoServer.add_entry(pid, %{date: {2013, 12, 19}, title: "TODO1"})
+    {:ok, pid} = Todo.Server.start()
+    Todo.Server.add_entry(pid, %{date: {2013, 12, 19}, title: "TODO1"})
 
-    result_list = TodoServer.entries(pid, {2013, 12, 19})
+    result_list = Todo.Server.entries(pid, {2013, 12, 19})
     assert result_list == [%{id: 1, date: {2013, 12, 19}, title: "TODO1"}]
   end
 
   test "Adding to existing date and reading succeeds" do
-    {:ok, pid} = TodoServer.start([%{date: {2013, 12, 19}, title: "TODO1"}])
-    TodoServer.add_entry(pid, %{date: {2013, 12, 19}, title: "TODO2"})
+    {:ok, pid} = Todo.Server.start([%{date: {2013, 12, 19}, title: "TODO1"}])
+    Todo.Server.add_entry(pid, %{date: {2013, 12, 19}, title: "TODO2"})
 
-    result_list = TodoServer.entries(pid, {2013, 12, 19})
+    result_list = Todo.Server.entries(pid, {2013, 12, 19})
 
     assert result_list == [
              %{id: 1, date: {2013, 12, 19}, title: "TODO1"},
@@ -46,44 +46,44 @@ defmodule TodoServerTest do
 
   test "Reading when there are multiple dates succeeds" do
     {:ok, pid} =
-      TodoServer.start([
+      Todo.Server.start([
         %{date: {2013, 12, 19}, title: "TODO1"},
         %{date: {2013, 12, 20}, title: "TODO2"}
       ])
 
-    result_list = TodoServer.entries(pid, {2013, 12, 19})
+    result_list = Todo.Server.entries(pid, {2013, 12, 19})
     assert result_list == [%{id: 1, date: {2013, 12, 19}, title: "TODO1"}]
 
-    result_list = TodoServer.entries(pid, {2013, 12, 20})
+    result_list = Todo.Server.entries(pid, {2013, 12, 20})
     assert result_list == [%{id: 2, date: {2013, 12, 20}, title: "TODO2"}]
   end
 
   test "Updating entry succeeds" do
-    {:ok, pid} = TodoServer.start([%{date: {2013, 12, 19}, title: "TODO1"}])
+    {:ok, pid} = Todo.Server.start([%{date: {2013, 12, 19}, title: "TODO1"}])
 
-    TodoServer.update_entry(pid, 1, fn _ ->
+    Todo.Server.update_entry(pid, 1, fn _ ->
       %{id: 1, date: {2013, 12, 20}, title: "TODO2"}
     end)
 
-    result_list = TodoServer.entries(pid, {2013, 12, 20})
+    result_list = Todo.Server.entries(pid, {2013, 12, 20})
     assert result_list == [%{id: 1, date: {2013, 12, 20}, title: "TODO2"}]
   end
 
   test "Updating entry with alternative interface succeeds" do
-    {:ok, pid} = TodoServer.start([%{date: {2013, 12, 19}, title: "TODO1"}])
+    {:ok, pid} = Todo.Server.start([%{date: {2013, 12, 19}, title: "TODO1"}])
 
-    TodoServer.update_entry(pid, %{id: 1, date: {2013, 12, 20}, title: "TODO2"})
+    Todo.Server.update_entry(pid, %{id: 1, date: {2013, 12, 20}, title: "TODO2"})
 
-    result_list = TodoServer.entries(pid, {2013, 12, 20})
+    result_list = Todo.Server.entries(pid, {2013, 12, 20})
     assert result_list == [%{id: 1, date: {2013, 12, 20}, title: "TODO2"}]
   end
 
   test "Deleting entry succeeds" do
-    {:ok, pid} = TodoServer.start([%{date: {2013, 12, 19}, title: "TODO1"}])
+    {:ok, pid} = Todo.Server.start([%{date: {2013, 12, 19}, title: "TODO1"}])
 
-    TodoServer.delete_entry(pid, 1)
+    Todo.Server.delete_entry(pid, 1)
 
-    result_list = TodoServer.entries(pid, {2013, 12, 19})
+    result_list = Todo.Server.entries(pid, {2013, 12, 19})
     assert result_list == []
   end
 end
