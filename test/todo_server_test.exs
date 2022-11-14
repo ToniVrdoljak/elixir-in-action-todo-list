@@ -55,10 +55,6 @@ defmodule TodoServerTest do
     assert result_list == [%{id: 1, date: {2013, 12, 20}, title: "TODO2"}]
   end
 
-  test "Updating entry with changed id fails" do
-    # TODO
-  end
-
   test "Updating entry with alternative interface succeeds" do
     {:ok, pid} = TodoServer.start([%{date: {2013, 12, 19}, title: "TODO1"}])
 
@@ -66,10 +62,6 @@ defmodule TodoServerTest do
 
     result_list = TodoServer.entries(pid, {2013, 12, 20})
     assert result_list == [%{id: 1, date: {2013, 12, 20}, title: "TODO2"}]
-  end
-
-  test "Updating entry with alternative interface wiht malformed entry fails" do
-    # TODO
   end
 
   test "Deleting entry succeeds" do

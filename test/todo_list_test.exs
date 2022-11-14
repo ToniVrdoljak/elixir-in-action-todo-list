@@ -84,7 +84,7 @@ defmodule TodoListTest do
     assert result_list == [%{id: 1, date: {2013, 12, 20}, title: "TODO2"}]
   end
 
-  test "Updating entry with alternative interface wiht malformed entry fails" do
+  test "Updating entry with alternative interface with malformed entry fails" do
     todo_list =
       TodoList.new()
       |> TodoList.add_entry(%{date: {2013, 12, 19}, title: "TODO1"})
