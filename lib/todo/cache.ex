@@ -3,6 +3,7 @@ defmodule Todo.Cache do
 
   @impl GenServer
   def init(_) do
+    Todo.Database.start("./persist")
     {:ok, %{}}
   end
 
@@ -10,7 +11,7 @@ defmodule Todo.Cache do
   def handle_call({:server_process, todo_list_name}, _, todo_servers) do
     case Map.fetch(todo_servers, todo_list_name) do
       :error ->
-        {:ok, todo_server_pid} = Todo.Server.start()
+        {:ok, todo_server_pid} = Todo.Server.start(todo_list_name)
         new_todo_servers = Map.put(todo_servers, todo_list_name, todo_server_pid)
         {:reply, todo_server_pid, new_todo_servers}
 
