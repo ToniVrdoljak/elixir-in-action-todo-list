@@ -11,7 +11,8 @@ defmodule Todo.Server do
     todo_list =
       case entries do
         [] ->
-          Todo.Database.get(name) || Todo.List.new()
+          send(self(), :real_init)
+          nil
 
         _ ->
           new_todo_list = Todo.List.new(entries)
@@ -56,10 +57,10 @@ defmodule Todo.Server do
   end
 
   @impl GenServer
-  def handle_info(:cleanup, state) do
-    # this method is just an example how to use handle info
-    IO.puts("Perfroming cleanup...")
-    {:noreply, state}
+  def handle_info(:real_init, {name, nil}) do
+    # this is where the initialization from disk is really performed
+    todo_list = Todo.Database.get(name) || Todo.List.new()
+    {:noreply, {name, todo_list}}
   end
 
   @impl GenServer
