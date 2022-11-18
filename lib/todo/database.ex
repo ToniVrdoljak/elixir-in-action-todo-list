@@ -9,23 +9,29 @@ defmodule Todo.Database do
 
   @impl GenServer
   def handle_cast({:store, key, data}, db_folder) do
-    File.mkdir_p!(db_folder)
+    spawn(fn ->
+      File.mkdir_p!(db_folder)
 
-    file_name(db_folder, key)
-    |> File.write!(:erlang.term_to_binary(data))
+      file_name(db_folder, key)
+      |> File.write!(:erlang.term_to_binary(data))
+    end)
 
     {:noreply, db_folder}
   end
 
   @impl GenServer
-  def handle_call({:get, key}, _, db_folder) do
-    data =
-      case File.read(file_name(db_folder, key)) do
-        {:ok, contents} -> :erlang.binary_to_term(contents)
-        _ -> nil
-      end
+  def handle_call({:get, key}, caller, db_folder) do
+    spawn(fn ->
+      data =
+        case File.read(file_name(db_folder, key)) do
+          {:ok, contents} -> :erlang.binary_to_term(contents)
+          _ -> nil
+        end
 
-    {:reply, data, db_folder}
+      GenServer.reply(caller, data)
+    end)
+
+    {:noreply, db_folder}
   end
 
   defp file_name(db_folder, key) do
