@@ -1,6 +1,6 @@
 # TodoList
 
-Implementation of todo list from "Elixir in action" book
+Implementation of todo list from the book "Elixir in action" by Saša Jurić
 
 ## Installation
 
