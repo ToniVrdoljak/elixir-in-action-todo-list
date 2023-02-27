@@ -1,6 +1,6 @@
 # TodoList
 
-**TODO: Add description**
+Implementation of todo list from "Elixir in action" book
 
 ## Installation
 
